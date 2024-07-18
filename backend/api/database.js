@@ -26,7 +26,11 @@ export async function getUser(id){
 }
 
 export async function getServers(){
-    const [result] = await pool.query("SELECT * FROM servers");
+    const [result] = await pool.query(`
+        SELECT serverID, playerCount, serverAddress, serverBanner, name, sponsored
+        FROM servers
+        ORDER BY sponsored DESC, weight DESC
+        `);
     return result;
 }
 
