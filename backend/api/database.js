@@ -37,9 +37,28 @@ export async function getServers(){
 export async function getServer(id){
     const [result] = await pool.query(`
         SELECT *
-        FROM servers
+        FROM servers, users
         WHERE serverID = ?
+        AND users.userID = servers.Users_userID
         `, [id])
+    return result[0]
+}
+
+export async function getServerReviews(serverID){
+    const [result] = await pool.query(`
+        SELECT *
+        FROM reviews
+        WHERE Servers_serverID = ?
+        `, [serverID])
+    return result
+}
+
+export async function getReview(serverID, reviewNo){
+    const [result] = await pool.query(`
+        SELECT *
+        FROM reviews
+        WHERE Servers_serverID = ? AND reviewNo = ?
+        `, [serverID, reviewNo])
     return result[0]
 }
 

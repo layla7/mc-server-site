@@ -1,6 +1,6 @@
-const url = "http://127.0.0.1:3000/api/"
 
-function placeCard(serverID, serverName, serverPlayers, imageLocation) {
+
+export function placeCard(serverID, serverName, serverPlayers, imageLocation) {
     var cardLink = $("<div></div>")
     //cardLink.attr("onClick",`changePage(\"${"servers/" + serverID}\")`)
     cardLink.attr("style", "text-decoration: none;")
@@ -25,43 +25,6 @@ function placeCard(serverID, serverName, serverPlayers, imageLocation) {
     cardLink.appendTo("#mainContents")
 }
 
-function placeMoreInfo(jsonData){
-    console.log(jsonData)
-}
-
-function moreInfo(){
-    id = window.location.hash.substring(1)
-    getRequest("servers/" + id)
-    .then(jsonData => {
-        placeMoreInfo((jsonData))
-    })
-}
-
-function changePage(location, id){
-    window.location.href = location + "#" + id
-}
-
-async function getRequest(suffix){
-    getURL = url + suffix;
-
-    const response = await fetch(
-        getURL,
-        {
-            method: "GET"
-        }
-    )
-
-    const jsonData = await response.json();
-
-    return jsonData;
-}
-
-function index(){
-    //setSuffix("servers")
-    getRequest("servers")
-    .then((jsonData) => {
-        for(i=0; i < jsonData.length; i++){
-            placeCard((jsonData[i].serverID), jsonData[i].name, jsonData[i].playerCount, jsonData[i].serverBanner)
-        } 
-    })
+export function placeMoreInfo(){
+    console.log("done")
 }
