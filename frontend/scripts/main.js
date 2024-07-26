@@ -25,63 +25,6 @@ function placeCard(serverID, serverName, serverPlayers, imageLocation) {
     cardLink.appendTo("#mainContents")
 }
 
-function placeMoreInfo(jsonData){
-    //console.log(jsonData.name)
-    $("#name").html("<STRONG>" + jsonData.name + "</STRONG>");
-    $("#shortDescription").html(jsonData.shortDescription);
-    $("#serverBanner").attr("src", jsonData.serverBanner);
-    $("#longDescription").html(jsonData.longDescription);
-    $("#moderationTitle").html("Moderation at " + jsonData.name + ":");
-    $("#moderationDescription").html(jsonData.moderationDescription);
-    $("#moderationAdditional").html(jsonData.moderationAdditional);
-    $("#serverRules").html(jsonData.serverRules); 
-    
-    if (jsonData.videoLink != undefined) {
-
-        if (jsonData.videoLink.includes("youtu.be/")){
-
-            var splitURL = jsonData.videoLink.split("youtu.be/");
-
-            splitURL = (splitURL[1].split("?"))[0];
-
-        } else if (jsonData.videoLink.includes("youtube.com/")){
-
-            var splitURL = jsonData.videoLink.split("youtube.com/");
-
-            splitURL = (splitURL[1].split("v="))[1];
-
-        }else splitURL = "";
-
-        $("#videoArea").html(`
-            <div class="embed-responsive" style="text-align: center;">
-                <iframe class="embed-responsive-item youtube" src="` + "https://www.youtube.com/embed/" + splitURL + "?rel=0" + `" allowfullscreen></iframe>
-            </div>
-        `)
-        $('#videoArea').addClass('pt-4');
-    }
-
-
-    var genresArray = getGenresArray(jsonData);
-
-
-
-    var genreArea = $("<div></div>");
-    genreArea.addClass("d-flex py-2");
-
-    genreArea.append(`<div style="width: 100%; overflow: auto;"><strong>Server Tags:</strong></div>`)
-    var genreCardZone = $(`<div style="width: 100%; overflow: auto;"></div>`)
-
-    for (i = 0; i < genresArray.length; i++){
-        genreCardZone.append(`<span class="badge bg-secondary px-1">` + genresArray[i] + `</span>` + " ")
-    }
-    
-    genreArea.append(genreCardZone);
-    $("#shortInfo").append(genreArea);
-
-    //console.log(genresArray);
-
-}
-
 function getGenresArray(jsonData){
     var array = [];
 
@@ -107,7 +50,7 @@ function getGenresArray(jsonData){
     if (jsonData.tekkit) array.push("Tekkit");
     if (jsonData.ftb) array.push("FTB");
     if (jsonData.factions) array.push("Factions");
-    if (jsonData.hungerGames) array.push("hungerGames");
+    if (jsonData.hungerGames) array.push("Hunger Games");
     if (jsonData.cobblemon) array.push("Cobblemon");
     if (jsonData.McMMO) array.push("McMMO");
     if (jsonData.landClaim) array.push("Land Claim");
@@ -119,20 +62,10 @@ function getGenresArray(jsonData){
     if (jsonData.familyFriendly) array.push("Family Friendly");
     if (jsonData.spleef) array.push("Spleef");
     if (jsonData.sumo) array.push("Sumo");
-    if (jsonData.hideandseek) array.push("hide&seek");
-    if (jsonData.eggwars) array.push("eggwars");
+    if (jsonData.hideandseek) array.push("Hide and Seek");
+    if (jsonData.eggwars) array.push("Eggwars");
 
-    return array;
-    
-}
-
-function moreInfo(){
-    id = window.location.hash.substring(1)
-
-    getRequest("servers/" + id)
-    .then(jsonData => {
-        placeMoreInfo(jsonData)
-    })
+    return array;   
 }
 
 function changePage(location, id){
@@ -162,4 +95,11 @@ function index(){
             placeCard((jsonData[i].serverID), jsonData[i].name, jsonData[i].playerCount, jsonData[i].serverBanner)
         } 
     })
+}
+
+async function apiTester(){
+
+    const response = await fetch("https://api.mcsrvstat.us/3/org.blockhero.net")
+
+    const data = await response.json()
 }
