@@ -32,7 +32,8 @@ export async function getServers(){
     const [result] = await pool.query(`
         SELECT serverID, playerCount, serverAddress, serverBanner, name, sponsored
         FROM servers
-        ORDER BY sponsored DESC, weight DESC
+        WHERE approved = 1
+        ORDER BY sponsored DESC, weight DESC;
         `);
     return result;
 }
@@ -111,6 +112,14 @@ export async function deleteServerEdits(editNo, serverID){
         `,[editNo,  serverID])
 }
 
+export async function setServerEditsApproved(serverID){
+    await pool.query(`
+        UPDATE serverEdits
+        SET approved = 0
+        WHERE Servers_serverID = ?
+        `,[serverID])
+}
+
 export async function postServerEdits(array){
     await pool.query(`
         INSERT INTO serverEdits (Servers_serverID,editNo,Users_userID, serverAddress,
@@ -135,11 +144,69 @@ export async function postServer(array){
         minigames, anarchy, pvp, pve, economy, hardcore, adventure,
         vanilla, crossplay, tekkit, ftb, factions, hungerGames, cobblemon, McMMO,
         landClaim, rpg, towny, earth, skywars, survivalGames, familyFriendly, spleef, sumo, hideandseek, eggwars,
-        averageRating, sponsored, playerCount, lastPing, live, weight)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        averageRating, sponsored, playerCount, lastPing, live, weight, approved)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
         ,array)
 
     return 
+}
+
+export async function updateServer(serverDetails){
+    await pool.query(`
+        UPDATE servers SET
+            editVersion = ?,
+            Users_userID = ?,
+            serverAddress = ?,
+            name = ?,
+            owner = ?,
+            longDescription = ?,
+            shortDescription = ?,
+            discord = ?,
+            videoLink = ?,
+            Location = ?,
+            gameVersion = ?,
+            Java = ?,
+            Bedrock = ?,
+            serverRules = ?,
+            moderationDescription = ?,
+            bedwars = ?,
+            smp = ?,
+            survival = ?,
+            modded = ?,
+            pixelmon = ?,
+            parkour = ?,
+            prison = ?,
+            skyblock = ?,
+            creative = ?,
+            minigames = ?,
+            anarchy = ?,
+            pvp = ?,
+            pve = ?,
+            economy = ?,
+            hardcore = ?,
+            adventure = ?,
+            vanilla = ?,
+            crossplay = ?,
+            tekkit = ?,
+            ftb = ?,
+            factions = ?,
+            hungerGames = ?,
+            cobblemon = ?,
+            McMMO = ?,
+            landClaim = ?,
+            rpg = ?,
+            towny = ?,
+            earth = ?,
+            skywars = ?,
+            survivalGames = ?,
+            familyFriendly = ?,
+            spleef = ?,
+            sumo = ?,
+            hideandseek = ?,
+            eggwars = ?,
+            approved = ?
+        WHERE serverID = ?;
+        `,serverDetails)
 }
 
 async function checkStatus(){

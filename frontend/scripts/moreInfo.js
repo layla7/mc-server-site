@@ -42,13 +42,53 @@ function placeMoreInfo(jsonData){
 
     $("#shortInfoHeader").html("<strong>" + jsonData.name + "</strong>")
 
-    
     //Get all information to fill up short info section
     var array = getShortInfo(jsonData);
 
     //Append array of html elements to fill up short info
     for (i = 0; i < array.length; i++) shortInfo.append(array[i]);
 
+    //Set up the modal with default values of the current stuff.
+    $("#input-id").val(jsonData.serverID);
+    $("#input-userid").val(jsonData.Users_userID);
+    $("#input-name").val(jsonData.name);
+    $("#input-serverAddress").val(jsonData.serverAddress);
+    $("#input-owner").val(jsonData.owner);
+    $("#input-approved").prop("checked" , jsonData.approved  == 1 ? true : false);
+    $("#input-longDescription").val(jsonData.longDescription);
+    $("#input-shortDescription").val(jsonData.shortDescription);
+    $("#input-discord").val(jsonData.discord);
+    $("#input-videoLink").val(jsonData.videoLink);
+    $("#input-location").val(jsonData.location);
+    $("#input-java").prop("checked" , jsonData.java  == 1 ? true : false);
+    $("#input-bedrock").prop("checked" , jsonData.bedrock  == 1 ? true : false);
+    $("#input-secondaryAddress").val(jsonData.secondaryAddress);
+    $("#input-serverRules").val(jsonData.serverRules);
+    $("#input-moderationDescription").val(jsonData.moderationDescription);
+    $("#input-moderationAdditional").val(jsonData.moderationAdditional);
+
+    let genresArray = getGenresArray(jsonData);
+
+    for (let i = 0; i < genresArray.length; i = i + 2) {
+        tickboxesString = `<div class = "d-flex py-2">
+                                <div style="width: 100%; overflow: auto;">
+                                    <div class="form-group form-check">
+                                        <input name = " + ` + genresArray[i][0] + ` +" type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i][0] + `">
+                                        <label class="form-check-label" for="input-` + genresArray[i][0] + `">` + genresArray[i][0] + `</label>
+                                    </div>
+                                </div>`
+
+        if (genresArray[i + 1] != undefined) tickboxesString = tickboxesString + `
+                    <div style="width: 100%; overflow: auto;">
+                        <div class="form-group form-check">
+                            <input name = " + ` + genresArray[i][0] + ` type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i + 1][0] + `">
+                            <label class="form-check-label" for="input-` + genresArray[i + 1][0] + `">` + genresArray[i + 1][0] + `</label>
+                        </div>
+                    </div>
+                </div>`
+
+        $("#input-genresCheckboxes").append(tickboxesString)
+    }
 }
 
 
@@ -93,8 +133,11 @@ function getShortInfo(jsonData){
     genreArea.append(`<div style="width: 100%; overflow: auto;"><strong>Server Tags:</strong></div>`)
     var genreCardZone = $(`<div style="width: 100%; overflow: auto;"></div>`)
 
-    for (i = 0; i < genresArray.length; i++){
-        genreCardZone.append(`<span class="badge bg-secondary px-1">` + genresArray[i] + `</span>` + " ")
+    let activeGenres = genresArray.filter(mode => mode[1]).map(mode => mode[0]);
+    //console.log(presentGenres[0][0])
+
+    for (i = 0; i < activeGenres.length; i++){
+        genreCardZone.append(`<span class="badge bg-secondary px-1">` + activeGenres[i] + `</span>` + " ")
     }
     
     genreArea.append(genreCardZone);

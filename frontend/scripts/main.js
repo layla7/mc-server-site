@@ -26,46 +26,47 @@ function placeCard(serverID, serverName, serverPlayers, imageLocation) {
 }
 
 function getGenresArray(jsonData){
-    var array = [];
 
     //I apologise sincerely to anyone who has ever believed in me as a programmer.
-    if (jsonData.bedwars) array.push("Bedwars");
-    if (jsonData.smp) array.push("SMP");
-    if (jsonData.survival) array.push("Survival");
-    if (jsonData.modded) array.push("Modded");
-    if (jsonData.pixelmon) array.push("Pixelmon");
-    if (jsonData.parkour) array.push("Parkour");
-    if (jsonData.prison) array.push("Prison");
-    if (jsonData.skyblock) array.push("Skyblock");
-    if (jsonData.creative) array.push("Creative");
-    if (jsonData.minigames) array.push("Minigames");
-    if (jsonData.anarchy) array.push("Anarchy");
-    if (jsonData.pvp) array.push("PVP");
-    if (jsonData.pve) array.push("PVE");
-    if (jsonData.economy) array.push("Economy");
-    if (jsonData.hardcore) array.push("Hardcore");
-    if (jsonData.adventure) array.push("Adventure");
-    if (jsonData.vanilla) array.push("Vanilla");
-    if (jsonData.crossplay) array.push("Crossplay");
-    if (jsonData.tekkit) array.push("Tekkit");
-    if (jsonData.ftb) array.push("FTB");
-    if (jsonData.factions) array.push("Factions");
-    if (jsonData.hungerGames) array.push("Hunger Games");
-    if (jsonData.cobblemon) array.push("Cobblemon");
-    if (jsonData.McMMO) array.push("McMMO");
-    if (jsonData.landClaim) array.push("Land Claim");
-    if (jsonData.rpg) array.push("RPG");
-    if (jsonData.towny) array.push("Towny");
-    if (jsonData.earth) array.push("Earth");
-    if (jsonData.skywars) array.push("Skywars");
-    if (jsonData.survivalGames) array.push("Survival Games");
-    if (jsonData.familyFriendly) array.push("Family Friendly");
-    if (jsonData.spleef) array.push("Spleef");
-    if (jsonData.sumo) array.push("Sumo");
-    if (jsonData.hideandseek) array.push("Hide and Seek");
-    if (jsonData.eggwars) array.push("Eggwars");
+    let genres = [
+        ["Bedwars", jsonData.bedwars ? true : false],
+        ["SMP", jsonData.smp ? true : false],
+        ["Survival", jsonData.survival ? true : false],
+        ["Modded", jsonData.modded ? true : false],
+        ["Pixelmon", jsonData.pixelmon ? true : false],
+        ["Parkour", jsonData.parkour ? true : false],
+        ["Prison", jsonData.prison ? true : false],
+        ["Skyblock", jsonData.skyblock ? true : false],
+        ["Creative", jsonData.creative ? true : false],
+        ["Minigames", jsonData.minigames ? true : false],
+        ["Anarchy", jsonData.anarchy ? true : false],
+        ["PVP", jsonData.pvp ? true : false],
+        ["PVE", jsonData.pve ? true : false],
+        ["Economy", jsonData.economy ? true : false],
+        ["Hardcore", jsonData.hardcore ? true : false],
+        ["Adventure", jsonData.adventure ? true : false],
+        ["Vanilla", jsonData.vanilla ? true : false],
+        ["Crossplay", jsonData.crossplay ? true : false],
+        ["Tekkit", jsonData.tekkit ? true : false],
+        ["FTB", jsonData.ftb ? true : false],
+        ["Factions", jsonData.factions ? true : false],
+        ["Hunger Games", jsonData.hungerGames ? true : false],
+        ["Cobblemon", jsonData.cobblemon ? true : false],
+        ["McMMO", jsonData.McMMO ? true : false],
+        ["Land Claim", jsonData.landClaim ? true : false],
+        ["RPG", jsonData.rpg ? true : false],
+        ["Towny", jsonData.towny ? true : false],
+        ["Earth", jsonData.earth ? true : false],
+        ["Skywars", jsonData.skywars ? true : false],
+        ["Survival Games", jsonData.survivalGames ? true : false],
+        ["Family Friendly", jsonData.familyFriendly ? true : false],
+        ["Spleef", jsonData.spleef ? true : false],
+        ["Sumo", jsonData.sumo ? true : false],
+        ["Hide and Seek", jsonData.hideandseek ? true : false],
+        ["Eggwars", jsonData.eggwars ? true : false]
+    ];
 
-    return array;   
+    return genres;   
 }
 
 function changePage(location, id){

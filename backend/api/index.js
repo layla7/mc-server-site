@@ -1,7 +1,7 @@
 import express from "express";
 import randomstring from "randomstring";
 
-import { getUser, getUsers, getServer, getServers, getServerReviews, getReview, deleteUser, deleteServer, postServerEdits, getServerEdits, checkSpecificServerStatus, postServer } from "./database.js";
+import { getUser, getUsers, getServer, getServers, getServerReviews, getReview, deleteUser, deleteServer, postServerEdits, getServerEdits, checkSpecificServerStatus, postServer, setServerEditsApproved, updateServer } from "./database.js";
 
 import dotenv from "dotenv";
 dotenv.config()
@@ -11,6 +11,7 @@ const app = express();
 const port = process.env.API_PORT;
 
 app.use(express.json());
+app.use(express.urlencoded({extended : true}));
 
 
 //This is waiting for a get request at the base  of the url
@@ -58,16 +59,7 @@ app.delete('/api/servers/:id', async (req, res) => {
 app.post("/api/serverEdits/", async (req, res)  => {
     const editNo = (await getServerEdits(req.body.serverID)).length + 1
 
-    const array = [
-        req.body.serverID, editNo, req.body.Users_userID, req.body.serverAddress,
-        req.body.name, req.body.owner, req.body.longDescription, req.body.shortDescription,
-        req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
-        req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
-        req.body.minigames, req.body.anarchy, req.body.pvp, req.body.pve, req.body.economy, req.body.hardcore, req.body.adventure,
-        req.body.vanilla, req.body.crossplay, req.body.tekkit, req.body.ftb, req.body.factions, req.body.hungerGames, req.body.cobblemon, req.body.McMMO,
-        req.body.landClaim, req.body.rpg, req.body.towny, req.body.earth, req.body.skywars, req.body.survivalGames, req.body.familyFriendly, req.body.spleef, req.body.sumo, req.body.hideandseek, req.body.eggwars
-    ]
-    const array2 = [
+    const serverEdits = [
         req.body.serverID, editNo, req.body.Users_userID, req.body.serverAddress,
         req.body.name, req.body.owner, req.body.approved, req.body.longDescription, req.body.shortDescription,
         req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
@@ -76,40 +68,84 @@ app.post("/api/serverEdits/", async (req, res)  => {
         req.body.vanilla, req.body.crossplay, req.body.tekkit, req.body.ftb, req.body.factions, req.body.hungerGames, req.body.cobblemon, req.body.McMMO,
         req.body.landClaim, req.body.rpg, req.body.towny, req.body.earth, req.body.skywars, req.body.survivalGames, req.body.familyFriendly, req.body.spleef, req.body.sumo, req.body.hideandseek, req.body.eggwars
     ]
+    const serverArray = [
+        req.body.serverID, editNo, req.body.Users_userID, req.body.serverAddress,
+        req.body.name, req.body.owner, req.body.longDescription, req.body.shortDescription,
+        req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
+        req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
+        req.body.minigames, req.body.anarchy, req.body.pvp, req.body.pve, req.body.economy, req.body.hardcore, req.body.adventure,
+        req.body.vanilla, req.body.crossplay, req.body.tekkit, req.body.ftb, req.body.factions, req.body.hungerGames, req.body.cobblemon, req.body.McMMO,
+        req.body.landClaim, req.body.rpg, req.body.towny, req.body.earth, req.body.skywars, req.body.survivalGames, req.body.familyFriendly, req.body.spleef, req.body.sumo, req.body.hideandseek, req.body.eggwars
+    ]
+
 
     if (req.body.approved == 1){
+        //Check if we've passed a serverID. If not then we assume it's a new server and need to generate it's ID
         if (req.body.serverID == undefined){
-            array[0] = "id-" + randomstring.generate(16);
-            array2[0] = array[0]
-            //average rating
-            array.push(0);
+            //Since this is a new server generate it's ID
+            serverArray[0] = "id-" + randomstring.generate(16);
+            serverEdits[0] = serverArray[0]
+
+            //averageRating
+            serverArray.push(0);
             //Sponsored
-            array.push(0)
-
-
+            serverArray.push(0);
             //Player count
-            //Last ping
-            //live
-            //const liveInfo = await checkSpecificServerStatus(req.body.serverID);
-
-            array.push("offline");
-
+            serverArray.push("offline");
+            //last ping
             let dateTime = new Date().toJSON().replace("T"," ");
             dateTime = dateTime.split(".")[0]
-            array.push(dateTime);
-
-            array.push(0);
-
+            serverArray.push(dateTime);
+            //live
+            serverArray.push(0);
             //weight
-            array.push(0);
+            serverArray.push(0);
+            //approved
+            serverArray.push(1);
+            //We've created our new server and added it to the site. this is LIVE
+            await postServer(serverArray);
+        } else{
+            //Set all our other edits to zero as we now have a different awesome new live one.
+            await setServerEditsApproved(serverArray[0])
 
-            await postServer(array);
-        }else{
-            console.log("something")
+            //approved
+            serverArray.push(1);
+
+            serverArray.shift();
+
+            serverArray.push(req.body.serverID);
+
+            await updateServer(serverArray);
+        }
+    } else{
+        if (req.body.serverID == undefined){
+            //Since this is a new server generate it's ID
+            serverArray[0] = "id-" + randomstring.generate(16);
+            serverEdits[0] = serverArray[0]
+
+            //averageRating
+            serverArray.push(0);
+            //Sponsored
+            serverArray.push(0);
+            //Player count
+            serverArray.push("offline");
+            //last ping
+            let dateTime = new Date().toJSON().replace("T"," ");
+            dateTime = dateTime.split(".")[0]
+            serverArray.push(dateTime);
+            //live
+            serverArray.push(0);
+            //weight
+            serverArray.push(0);
+            //approved
+            serverArray.push(0);
+            //We've created our new server and added it to the site. this is LIVE
+            await postServer(serverArray);
         }
     }
 
-    await postServerEdits(array2)
+    //No matter what serverEdits is getting what's being set put to it.
+    await postServerEdits(serverEdits)
     res.sendStatus(200)
 })
 
