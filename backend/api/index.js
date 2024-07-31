@@ -1,5 +1,6 @@
 import express from "express";
 import randomstring from "randomstring";
+import cors from "cors";
 
 import { getUser, getUsers, getServer, getServers, getServerReviews, getReview, deleteUser, deleteServer, postServerEdits, getServerEdits, checkSpecificServerStatus, postServer, setServerEditsApproved, updateServer } from "./database.js";
 
@@ -10,8 +11,11 @@ dotenv.config()
 const app = express();
 const port = process.env.API_PORT;
 
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended : true}));
+
+
+//app.use(express.urlencoded({extended : true}));
 
 
 //This is waiting for a get request at the base  of the url
@@ -60,7 +64,7 @@ app.post("/api/serverEdits/", async (req, res)  => {
     const editNo = (await getServerEdits(req.body.serverID)).length + 1
 
     const serverEdits = [
-        req.body.serverID, editNo, req.body.Users_userID, req.body.serverAddress,
+        req.body.serverID, editNo, req.body.userID, req.body.serverAddress,
         req.body.name, req.body.owner, req.body.approved, req.body.longDescription, req.body.shortDescription,
         req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
         req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
@@ -69,7 +73,7 @@ app.post("/api/serverEdits/", async (req, res)  => {
         req.body.landClaim, req.body.rpg, req.body.towny, req.body.earth, req.body.skywars, req.body.survivalGames, req.body.familyFriendly, req.body.spleef, req.body.sumo, req.body.hideandseek, req.body.eggwars
     ]
     const serverArray = [
-        req.body.serverID, editNo, req.body.Users_userID, req.body.serverAddress,
+        req.body.serverID, editNo, req.body.userID, req.body.serverAddress,
         req.body.name, req.body.owner, req.body.longDescription, req.body.shortDescription,
         req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
         req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
@@ -146,7 +150,7 @@ app.post("/api/serverEdits/", async (req, res)  => {
 
     //No matter what serverEdits is getting what's being set put to it.
     await postServerEdits(serverEdits)
-    res.sendStatus(200)
+    res.sendStatus(200).send("OK")
 })
 
 //GET Array of reviews for specific server.

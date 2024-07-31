@@ -73,7 +73,7 @@ function placeMoreInfo(jsonData){
         tickboxesString = `<div class = "d-flex py-2">
                                 <div style="width: 100%; overflow: auto;">
                                     <div class="form-group form-check">
-                                        <input name = " + ` + genresArray[i][0] + ` +" type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i][0] + `">
+                                        <input name = "` + genresArray[i][0] + `" type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i][0] + `">
                                         <label class="form-check-label" for="input-` + genresArray[i][0] + `">` + genresArray[i][0] + `</label>
                                     </div>
                                 </div>`
@@ -81,7 +81,7 @@ function placeMoreInfo(jsonData){
         if (genresArray[i + 1] != undefined) tickboxesString = tickboxesString + `
                     <div style="width: 100%; overflow: auto;">
                         <div class="form-group form-check">
-                            <input name = " + ` + genresArray[i][0] + ` type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i + 1][0] + `">
+                            <input name = "` + genresArray[i][0] + `" type="checkbox" ` + (genresArray[i][1] ? "checked" : "") + ` class="form-check-input" id="input-` + genresArray[i + 1][0] + `">
                             <label class="form-check-label" for="input-` + genresArray[i + 1][0] + `">` + genresArray[i + 1][0] + `</label>
                         </div>
                     </div>
@@ -91,7 +91,47 @@ function placeMoreInfo(jsonData){
     }
 }
 
+$('#EditForm').on('submit', async function(){
+    const dictionary = {
+        serverID : window.location.hash.substring(1),
+        serverAddress : $("#input-serverAddress").val(),
+        name : $("#input-name").val(),
+        owner : $("#input-owner").val(),
+        approved : $("#input-approved").is(":checked") ? 1 : 0,
+        java : $("#input-java").is(":checked") ? 1 : 0,
+        bedrock : $("#input-bedrock").is(":checked") ? 1 : 0,
+        secondaryAddress : $("#input-secondaryAddress").val(),
+        longDescription : $("#input-longDescription").val(),
+        shortDescription : $("#input-shortDescription").val(),
+        discord : $("#input-discord").val(),
+        videoLink : $("#input-videoLink").val(),
+        location : $("#input-location").val(),
+        serverRules : $("#input-serverRules").val(),
+        moderationDescription : $("#input-moderationDescription").val(),
+        moderationAdditional : $("#input-moderationAdditional").val(),
+        userID : "1"
+    }
 
+    let array = getGenresArray({});
+
+    for (let i = 0; i < array.length; i++){
+        dictionary[array[i][0]] = $("#input-" + array[i][0]).is(":checked") ? 1 : 0
+    }
+
+    await console.log(dictionary);
+
+    const response = await fetch(
+        url  + "serverEdits",
+        {
+            method: "POST",
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(dictionary)
+        }
+    )
+
+});
 
 function getShortInfo(jsonData){
     var array = [];
@@ -197,7 +237,7 @@ function getShortInfo(jsonData){
                 <div style="width: 100%; overflow: auto;">
                 <strong>Listed by:</strong></div>
                 <div style="width: 100%; overflow: auto;">
-                <span class = "badge bg-secondary"><a href="./user-page.html">` + jsonData.username + `</span>
+                <a href="./user-page.html"><span class = "badge bg-secondary" id= "username">` + jsonData.username + `</span>
                 </div></div>`)
     }
 
