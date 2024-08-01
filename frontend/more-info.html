@@ -44,7 +44,7 @@
                         <h1 class="mb-3 text-primary" style = "text-align:  center; font-size: 300%;" id="name"></h1>
                         <p id="shortDescription" class="card-text" style="font-size: 140%; text-align: center;"></p>
                         <div class="image-placeholder mb-3">
-                            <img id = "serverBanner" src="" class="img-fluid w-100 ">
+                            <img id = "serverBanner" src="" style = "width: 100%; max-height: 200px">
                         </div>
                         <div style="display: inline-block; font-size: 110%; width:100%; overflow: auto;">
                             <p class="card-text px-2" id = "longDescription"></p>
@@ -68,8 +68,8 @@
                 <div class="card text-white bg-primary">
                     <div class="card-body" id = "shortInfo">
                         <h4 class = "pb-3" style = "text-align: center;" id="shortInfoHeader"><strong>Header</strong></h4>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#serverModal">
-                            Open Server Form
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#serverModal">
+                            Edit Server
                         </button>
                     </div>
                 </div>
@@ -110,9 +110,9 @@
                             <label for="input-owner">Owner</label>
                             <input type="text" class="form-control" name="owner" id="input-owner">
                         </div>
-                        <div class="form-group form-check">
-                            <input type="checkbox" name = "approved class="form-check-input" id="input-approved">
-                            <label class="form-check-label" for="input-approved">Approved</label>
+                        <div class="form-group">
+                            <label class="form-check-label" for="input-serverBanner">Server Banner</label>
+                            <input type="file" id="input-serverBanner" accept = "image/*" name="filename">
                         </div>
                         <div class="form-group">
                             <label for="input-longDescription">Long Description</label>
@@ -154,12 +154,13 @@
                             <textarea class="form-control" name="moderationAdditional" id="input-moderationAdditional" rows="4"></textarea>
                         </div>
                         <div id="input-genresCheckboxes"></div>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type = "submit" value = "submit" class="btn btn-primary">Submit changes</button>
+                    <button type = "button" class="btn btn-secondary"><input type="checkbox" name = "approved" class="form-check-input" id="input-approved"><label class="form-check-label" for="input-approved">Approve Changes</label></button>
+                    <button type = "button" id = "submitButton" class="btn btn-primary" onclick="formSubmit()">Submit changes</button>
                 </div>
-            </form>
             </div>
         </div>
     </div>

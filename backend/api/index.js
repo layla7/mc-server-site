@@ -1,6 +1,9 @@
 import express from "express";
 import randomstring from "randomstring";
 import cors from "cors";
+import multer from "multer";
+import path from "path";
+import crypto from "crypto"
 
 import { getUser, getUsers, getServer, getServers, getServerReviews, getReview, deleteUser, deleteServer, postServerEdits, getServerEdits, checkSpecificServerStatus, postServer, setServerEditsApproved, updateServer } from "./database.js";
 
@@ -11,8 +14,25 @@ dotenv.config()
 const app = express();
 const port = process.env.API_PORT;
 
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: function (req, file, cb) {
+      crypto.pseudoRandomBytes(16, function (err, raw) {
+        if (err) return cb(err);
+  
+        const filename = raw.toString('hex') + path.extname(file.originalname);
+        cb(null, filename);
+      });
+    }
+  });
+  
+const upload = multer({ storage: storage})
+
+
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
+app.use("/images", express.static('uploads'));
 
 
 //app.use(express.urlencoded({extended : true}));
@@ -60,11 +80,17 @@ app.delete('/api/servers/:id', async (req, res) => {
     res.status(200).send("OK")
 })
 
+app.post("/api/serverEdits/images", upload.single("file"), async (req, res) => {
+    //console.log(res)
+    res.json({location : "http://localhost:3000/images/" + req.file.filename});
+    //console.log(res.file.)
+})
+
 app.post("/api/serverEdits/", async (req, res)  => {
     const editNo = (await getServerEdits(req.body.serverID)).length + 1
 
     const serverEdits = [
-        req.body.serverID, editNo, req.body.userID, req.body.serverAddress,
+        req.body.serverID, editNo, req.body.userID, req.body.serverAddress, req.body.serverBanner,
         req.body.name, req.body.owner, req.body.approved, req.body.longDescription, req.body.shortDescription,
         req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
         req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
@@ -73,7 +99,7 @@ app.post("/api/serverEdits/", async (req, res)  => {
         req.body.landClaim, req.body.rpg, req.body.towny, req.body.earth, req.body.skywars, req.body.survivalGames, req.body.familyFriendly, req.body.spleef, req.body.sumo, req.body.hideandseek, req.body.eggwars
     ]
     const serverArray = [
-        req.body.serverID, editNo, req.body.userID, req.body.serverAddress,
+        req.body.serverID, editNo, req.body.userID, req.body.serverAddress, req.body.serverBanner,
         req.body.name, req.body.owner, req.body.longDescription, req.body.shortDescription,
         req.body.discord,req.body.videoLink,req.body.location,req.body.gameVersion,req.body.java,req.body.bedrock,req.body.serverRules,req.body.moderationDescription, 
         req.body.bedwars, req.body.smp, req.body.survival, req.body.modded, req.body.pixelmon, req.body.parkour, req.body.prison, req.body.skyblock, req.body.creative,
@@ -150,7 +176,7 @@ app.post("/api/serverEdits/", async (req, res)  => {
 
     //No matter what serverEdits is getting what's being set put to it.
     await postServerEdits(serverEdits)
-    res.sendStatus(200).send("OK")
+    res.sendStatus(200)
 })
 
 //GET Array of reviews for specific server.

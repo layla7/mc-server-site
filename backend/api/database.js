@@ -122,14 +122,14 @@ export async function setServerEditsApproved(serverID){
 
 export async function postServerEdits(array){
     await pool.query(`
-        INSERT INTO serverEdits (Servers_serverID,editNo,Users_userID, serverAddress,
+        INSERT INTO serverEdits (Servers_serverID,editNo,Users_userID, serverAddress, serverBanner,
         name,owner,approved,longDescription,shortDescription,
         discord,videoLink,Location,gameVersion,Java,Bedrock,serverRules,moderationDescription, 
         bedwars,smp, survival, modded, pixelmon, parkour, prison, skyblock, creative,
         minigames, anarchy, pvp, pve, economy, hardcore, adventure,
         vanilla, crossplay, tekkit, ftb, factions, hungerGames, cobblemon, McMMO,
         landClaim, rpg, towny, earth, skywars, survivalGames, familyFriendly, spleef, sumo, hideandseek, eggwars)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         `, array)
     
     return array[0]
@@ -137,7 +137,7 @@ export async function postServerEdits(array){
 
 export async function postServer(array){
     await pool.query(`
-        INSERT INTO servers (serverID,editVersion, Users_userID, serverAddress,
+        INSERT INTO servers (serverID,editVersion, Users_userID, serverAddress, serverBanner,
         name,owner,longDescription,shortDescription,
         discord,videoLink,Location,gameVersion,Java,Bedrock,serverRules,moderationDescription, 
         bedwars,smp, survival, modded, pixelmon, parkour, prison, skyblock, creative,
@@ -145,10 +145,8 @@ export async function postServer(array){
         vanilla, crossplay, tekkit, ftb, factions, hungerGames, cobblemon, McMMO,
         landClaim, rpg, towny, earth, skywars, survivalGames, familyFriendly, spleef, sumo, hideandseek, eggwars,
         averageRating, sponsored, playerCount, lastPing, live, weight, approved)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-        ,array)
-
-    return 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
+        , array)
 }
 
 export async function updateServer(serverDetails){
@@ -157,6 +155,7 @@ export async function updateServer(serverDetails){
             editVersion = ?,
             Users_userID = ?,
             serverAddress = ?,
+            serverBanner = ?,
             name = ?,
             owner = ?,
             longDescription = ?,
